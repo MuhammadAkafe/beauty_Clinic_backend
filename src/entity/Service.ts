@@ -10,6 +10,9 @@ export class Services {
     @PrimaryGeneratedColumn({ type: "integer" })
     service_id!: number;
 
+    @Column({ type: "integer" })
+    user_id!: number;
+
     @Column({ type: "text" })
     title!: string;
 

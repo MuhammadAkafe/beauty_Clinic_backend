@@ -6,7 +6,7 @@ import { Entity, PrimaryGeneratedColumn, Column,
 
 @Entity()
 export class Users {
-    @PrimaryGeneratedColumn({ type: "bigint" })
+    @PrimaryGeneratedColumn({ type: "integer" })
     user_id!: number;
 
     @Column({ type: "text" ,nullable: false})
@@ -18,8 +18,11 @@ export class Users {
     @Column({ type: "text" ,nullable: false})
     password!: string;
 
-    @Column({ type: "text" ,nullable: false, default: false})
-    isAdmin!: string;
+    @Column({ type: "boolean" ,nullable: false, default: false})
+    isAdmin!: boolean;
+
+    @Column({ type: "text" ,nullable: true})
+    url!: string;
 
     @CreateDateColumn({ type: "timestamp" })
     created_at!: Date;

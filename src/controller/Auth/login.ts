@@ -7,7 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import { AppDataSource } from "../../data-source/data-source";
 import { Users } from "../../entity/Users";
-import { LoginRequestBody } from "../../types/Requestbody";
+import { LoginRequestBody } from "../../types/Request";
 dotenv.config();
 
 

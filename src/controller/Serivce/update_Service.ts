@@ -1,17 +1,24 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../../data-source/data-source";
 import { Services } from "../../entity/Service";
-import { UpdateServiceRequest } from "../../types/Requestbody";
+import { UpdateServiceRequest } from "../../types/Request";
 import { UpdateServiceResponse } from "../../types/Response";
 
-const update_service = async (req: Request<{}, {}, UpdateServiceRequest>, res: Response): Promise<Response<UpdateServiceResponse>> => {
+const update_service = async (req: Request<{service_id: number}, {}, UpdateServiceRequest>, res: Response): Promise<Response<UpdateServiceResponse>> => {
     try {
-        const { service_id, title, sub_title, status } = req.body;
+        const { title, sub_title, status } = req.body;
+        const {service_id} = req.params;
+
+        if(!service_id || !title || !sub_title || !status)
+        {
+            return res.status(400).json({ message: "All fields are required",success: false });
+        }
         
         const serviceRepository = AppDataSource.getRepository(Services);
         const service = await serviceRepository.findOne({
-            where: { service_id }
+            where: { service_id: service_id }
         });
+
 
         
         if (!service) {

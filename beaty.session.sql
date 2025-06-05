@@ -20,3 +20,6 @@ select * from items;
 
 
 delete FROM items where item_id = 25;
+
+
+drop table if exists users;

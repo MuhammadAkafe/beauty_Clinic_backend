@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { create_user_response } from "../../types/Response";
 import { Users } from "../../entity/Users";
 import { AppDataSource } from "../../data-source/data-source";
-import { RegisterRequestBody } from "../../types/Requestbody";
+import { RegisterRequestBody } from "../../types/Request";
 
 
 
@@ -13,7 +13,6 @@ const createUser = async (username: string, email: string, password: string) => 
     try {
 
         // Check if the user already exists
-        await AppDataSource.manager.deleteAll(Users); // Clear the Users table for testing purposes, remove this in production
         const user = await AppDataSource.manager.findOne(Users, { where: { email } });
         if (user) {
             throw new Error("User already exists");
@@ -30,6 +29,7 @@ const createUser = async (username: string, email: string, password: string) => 
 
         // Save the user to the database
         await AppDataSource.getRepository(Users).save(newUser);
+        return newUser;
     }
     catch (error: any) {
         console.log(error.message);
@@ -49,8 +49,13 @@ const register = async (req: Request<{},{},RegisterRequestBody>, res: Response)
         if (password !== confirm_password) {
             return res.status(400).json({ message: "Password and confirm password do not match",success: false });
         }
-        await createUser(username, email, password);
-        return res.status(200).json({ message: "User registered successfully",success: true });
+        const newUser = await createUser(username, email, password);
+        if(!newUser)
+        {
+            return res.status(400).json({ message: "User registration failed",success: false });
+        }
+
+        return res.status(200).json({ message: `User registered successfully  ${newUser.user_id}`,success: true });
     } 
     catch (error: any) {
         return res.status(500).json({ message: `Internal server error ${error.message}`,success: false });

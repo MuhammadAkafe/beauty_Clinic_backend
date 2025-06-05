@@ -12,10 +12,11 @@ export interface LoginRequestBody {
     password: string;
 }
 
+
+
 export interface AddServiceRequestBody {
     title: string;
     sub_title: string;
-    items: Items[];
     status: string;
 }
 
@@ -25,4 +26,10 @@ export interface UpdateServiceRequest {
     sub_title: string;
     items: Items[];
     status: string;
+}
+
+export interface PathParams {
+    user_id?: number;
+    service_id?: number;
+    item_id?: number;
 }

@@ -6,6 +6,7 @@ import "reflect-metadata"
 import cookieParser from "cookie-parser";
 import serviceRouter from "./router/service_router";
 import { AppDataSource } from "./data-source/data-source";
+import itemsRouter from "./router/items_router";
 dotenv.config();
 
 const app = express();
@@ -28,7 +29,7 @@ const port = process.env.PORT || 3001;
 
 app.use("/auth", authRouter);
 app.use("/service", serviceRouter);
-
+app.use("/items", itemsRouter);
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
