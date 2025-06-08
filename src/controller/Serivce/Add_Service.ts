@@ -10,58 +10,71 @@ import { AddServiceRequestBody, PathParams } from "../../types/Request";
 export const Add_Service = async (req: Request<PathParams, {},AddServiceRequestBody>, res: Response):
  Promise<Response<AddServiceResponse>> => {
     try {
-        // Check if database is initialized
-        if (!AppDataSource.isInitialized) 
-            {
-            await AppDataSource.initialize();
-            }
+        const { title, sub_title, status, items} = req.body;
+        const { user_id } = req.params;
 
-        const { title, sub_title,status } = req.body;
-        const {user_id} = req.params;
 
-        if(!user_id)
-        {
+        // Input validation
+        if (!user_id || !title || !sub_title || !items ) {
             return res.status(400).json({
-                message: "User ID is required",
+                message: "Missing required fields",
                 success: false,
+                required: {
+                    user_id: !user_id,
+                    title: !title,
+                    sub_title: !sub_title,
+                    items: !items
+                }
             });
         }
 
-        const userRepository = await AppDataSource.getRepository(Users).findOne({
-            where: { user_id: user_id }
+
+
+        // Find user
+        const user = await AppDataSource.getRepository(Users).findOne({
+            where: { user_id: Number(user_id) }
         });
 
-
-        if(!userRepository)
-        {
-            return res.status(400).json({
+        if (!user) {
+            return res.status(404).json({
                 message: "User not found",
-                success: false,
-                user: userRepository
+                success: false
             });
         }
 
-
+        // Create and save service
         const service = new Services();
         service.title = title;
         service.sub_title = sub_title;
-        service.status = status;
-        service.user_id = user_id;
-        // Create and save the service first
-        const serviceRepository = AppDataSource.getRepository(Services);
-        const savedService = await serviceRepository.save(service);
+        service.status = status || "جلسه"; // Default status if not provided
+        service.user_id = Number(user_id);
 
-        return res.status(200).json({ 
-            message: "Service added successfully", 
+        const savedService = await AppDataSource.getRepository(Services).save(service);
+
+        if (!savedService) {
+           return res.status(400).json({
+            message: "Failed to save service",
+            success: false
+           });
+        }
+        for (const list_item of items) {
+            const item = new Items();
+            item.type = list_item.type || "";
+            item.price = list_item.price || 0;
+            item.service = savedService;
+            await AppDataSource.getRepository(Items).save(item);
+        }
+
+        return res.status(201).json({ 
+            message: "Service and item added successfully", 
             success: true, 
-            service: savedService 
+            service: savedService,
         });
-    } 
-    catch (error:any) {
-        console.error("Detailed error:", error);
+    } catch (error: any) {
+        console.error("Service creation error:", error);
         return res.status(500).json({ 
-            message: `Internal server error ${error}`, 
-            success: false,
+            message: error.message || "Internal server error", 
+            success: false
         });
     }
 }

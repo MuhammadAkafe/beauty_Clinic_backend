@@ -18,6 +18,7 @@ export interface AddServiceRequestBody {
     title: string;
     sub_title: string;
     status: string;
+    items: Items[];
 }
 
 export interface UpdateServiceRequest {

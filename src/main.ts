@@ -6,7 +6,6 @@ import "reflect-metadata"
 import cookieParser from "cookie-parser";
 import serviceRouter from "./router/service_router";
 import { AppDataSource } from "./data-source/data-source";
-import itemsRouter from "./router/items_router";
 dotenv.config();
 
 const app = express();
@@ -17,19 +16,35 @@ app.use(cors());
 app.use(cookieParser());
 
 // Initialize database connection
-AppDataSource.initialize()
-    .then(() => {
-        console.log("Database connection initialized successfully");
-    })
-    .catch((error) => {
-        console.error("Error during Data Source initialization:", error);
-    });
+const initializeApp = async () => {
+    try {
+        if (!AppDataSource.isInitialized) {
+            console.log('Initializing database connection...');
+            await AppDataSource.initialize();
+            console.log("Database connection initialized successfully");
+        }
 
-const port = process.env.PORT || 3001;
+        const port = process.env.PORT || 3001;
+        app.use("/auth", authRouter);
+        app.use("/service", serviceRouter);
+        
+        app.listen(port, () => {
+            console.log(`Server is running on port ${port}`);
+        });
+    } 
+    catch (error) {
+        console.error("Error during application initialization:", error);
+        if (error instanceof Error) {
+            console.error("Error details:", error.message);
+        }
+        process.exit(1);
+    }
+};
 
-app.use("/auth", authRouter);
-app.use("/service", serviceRouter);
-app.use("/items", itemsRouter);
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (error) => {
+    console.error('Unhandled promise rejection:', error);
+    process.exit(1);
 });
+
+initializeApp();

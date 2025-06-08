@@ -1,43 +1,32 @@
-import { DataSource } from "typeorm";
-import { Users } from "../entity/Users";
-import dotenv from "dotenv";
-import { Services } from "../entity/Service";
-import { Items } from "../entity/Items";
-import path from "path";
-import fs from "fs";
-
-// Get the absolute path to .env.production
-const envPath = path.join(process.cwd(), '.env.production');
-console.log('Current working directory:', process.cwd());
-console.log('Looking for .env.production at:', envPath);
-console.log('File exists:', fs.existsSync(envPath));
-
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppDataSource = void 0;
+const typeorm_1 = require("typeorm");
+const Users_1 = require("../entity/Users");
+const dotenv_1 = __importDefault(require("dotenv"));
+const Service_1 = require("../entity/Service");
+const Items_1 = require("../entity/Items");
+const path_1 = __importDefault(require("path"));
 // Load production environment variables
-const result = dotenv.config({ path: envPath });
-if (result.error) {
-    console.error('Error loading .env.production:', result.error);
-    process.exit(1);
-}
-
-// Log all environment variables (excluding sensitive data)
-console.log('Environment variables loaded:', Object.keys(process.env).filter(key => key.startsWith('DATABASE_')));
-
+dotenv_1.default.config({ path: path_1.default.resolve(__dirname, '../..//.env.production') });
 // Log the database URL (without password) for debugging
 const dbUrl = process.env.DATABASE_URL;
 if (!dbUrl) {
     console.error('DATABASE_URL is not set in .env.production');
     process.exit(1);
 }
-
 // Log the host part of the URL for debugging
 try {
     const url = new URL(dbUrl);
     console.log('Database host:', url.hostname);
-} catch (error) {
+}
+catch (error) {
     console.error('Invalid DATABASE_URL format:', error);
     process.exit(1);
 }
-
 // export const AppDataSource = new DataSource({
 //     type: "postgres",
 //     host: process.env.DB_HOST,
@@ -49,22 +38,14 @@ try {
 //     logging: true,
 //     entities: [Users, Services, Items]
 // })
-
-
-export const AppDataSource = new DataSource({
+exports.AppDataSource = new typeorm_1.DataSource({
     type: "postgres",
     url: dbUrl,
     synchronize: false,
     logging: true,
-    migrations: [path.join(__dirname, "../migrations/*.ts")],
+    migrations: [path_1.default.join(__dirname, "../migrations/*.ts")],
     migrationsTableName: "migrations",
     migrationsRun: true,
-    entities: [Users, Services, Items],
+    entities: [Users_1.Users, Service_1.Services, Items_1.Items],
     ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-})
-
-
-
-
-
-
+});

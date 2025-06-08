@@ -3,13 +3,13 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { create_user_response } from "../../types/Response";
 import dotenv from "dotenv";
-import fs from 'fs';
-import path from 'path';
+import path from "path";
 import { AppDataSource } from "../../data-source/data-source";
 import { Users } from "../../entity/Users";
 import { LoginRequestBody } from "../../types/Request";
-dotenv.config();
 
+// Load production environment variables
+dotenv.config({ path: path.resolve(__dirname, '../../../.env.production') });
 
 const validateLogin = async (email: string, password: string) => {
     const user = await AppDataSource.manager.findOne(Users, { where: { email } });
@@ -18,14 +18,13 @@ const validateLogin = async (email: string, password: string) => {
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
     return isPasswordValid;
-    
 }
 
 // Read the keys
-const privateKey = fs.readFileSync(path.join(__dirname, '../../../keys/private.pem'), 'utf8');
-
-
-
+const privateKey = process.env.PRIVATE_KEY;
+if(!privateKey) {
+    throw new Error("PRIVATE_KEY is not set in .env.production");
+}
 
 const login = async (req: Request<{},{},LoginRequestBody>, res: Response): Promise<Response<create_user_response>> => {
     try {
@@ -44,6 +43,7 @@ const login = async (req: Request<{},{},LoginRequestBody>, res: Response): Promi
 
     } 
     catch (error) {
+        console.error('Login error:', error);
         return res.status(500).json({ message: "Internal server error",success: false });
     }
 }

@@ -7,8 +7,7 @@ import { Users } from "../../entity/Users";
 const get_all_services = async (req: Request<{user_id:string}>, res: Response): Promise<Response<GetAllServicesResponse>> => {
     try {
 
-        const user_id=req.params.user_id;
-
+        const {user_id}=req.params;
 
         if(!user_id)
         {
@@ -37,7 +36,8 @@ const get_all_services = async (req: Request<{user_id:string}>, res: Response): 
             });
         }
         
-        return res.status(200).json({ 
+        return res.status(200).json(
+            { 
             message: "Services fetched successfully", 
             success: true, 
             services 
