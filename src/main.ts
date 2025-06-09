@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.use(cors({
-    origin: 'https://vite-project-eight-self.vercel.appp/',
+    origin: 'https://vite-project-eight-self.vercel.app/',
     credentials: true,
   }));
 
