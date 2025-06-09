@@ -14,10 +14,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(cors(
     {
-        origin: "http://localhost:3000",
+        origin: "http://localhost:2000",
         credentials: true,
     }
 ));
+
+
 app.use(cookieParser());
 
 // Initialize database connection
