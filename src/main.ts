@@ -6,6 +6,7 @@ import "reflect-metadata"
 import cookieParser from "cookie-parser";
 import serviceRouter from "./router/service_router";
 import { AppDataSource } from "./data-source/data-source";
+
 dotenv.config();
 
 const app = express();
@@ -14,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.use(cors({
-    origin: 'https://vite-project-eight-self.vercel.app',
+    origin: ['https://vite-project-eight-self.vercel.app', 'http://localhost:5173'],
     credentials: true,
   }));
 
