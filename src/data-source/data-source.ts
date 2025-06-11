@@ -1,54 +1,28 @@
 import { DataSource } from "typeorm";
 import { Users } from "../entity/Users";
-import dotenv from "dotenv";
 import { Services } from "../entity/Service";
 import { Items } from "../entity/Items";
 import path from "path";
-import fs from "fs";
 
-// Get the absolute path to .env.production
-const envPath = path.join(process.cwd(), '.env.production');
-console.log('Current working directory:', process.cwd());
-console.log('Looking for .env.production at:', envPath);
-console.log('File exists:', fs.existsSync(envPath));
 
-// Load production environment variables
-const result = dotenv.config({ path: envPath });
-if (result.error) {
-    console.error('Error loading .env.production:', result.error);
-    process.exit(1);
-}
 
-// Log all environment variables (excluding sensitive data)
-console.log('Environment variables loaded:', Object.keys(process.env).filter(key => key.startsWith('DATABASE_')));
 
-// Log the database URL (without password) for debugging
 const dbUrl = process.env.DATABASE_URL;
-if (!dbUrl) {
+if (!dbUrl) 
+    {
     console.error('DATABASE_URL is not set in .env.production');
     process.exit(1);
 }
 
-// Log the host part of the URL for debugging
+
 try {
     const url = new URL(dbUrl);
     console.log('Database host:', url.hostname);
-} catch (error) {
+} catch (error) 
+{
     console.error('Invalid DATABASE_URL format:', error);
     process.exit(1);
 }
-
-// export const AppDataSource = new DataSource({
-//     type: "postgres",
-//     host: process.env.DB_HOST,
-//     port: parseInt(process.env.DB_PORT || "5432"),
-//     username: process.env.DB_USERNAME,
-//     password: process.env.DB_PASSWORD,
-//     database: process.env.DB_NAME,
-//     synchronize: true,
-//     logging: true,
-//     entities: [Users, Services, Items]
-// })
 
 
 export const AppDataSource = new DataSource({

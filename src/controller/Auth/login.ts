@@ -2,14 +2,13 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { create_user_response } from "../../types/Response";
-import dotenv from "dotenv";
-import path from "path";
 import { AppDataSource } from "../../data-source/data-source";
 import { Users } from "../../entity/Users";
 import { LoginRequestBody } from "../../types/Request";
 
-// Load production environment variables
-dotenv.config({ path: path.resolve(__dirname, '../../../.env.production') });
+
+
+
 
 const validateLogin = async (email: string, password: string) => {
     const user = await AppDataSource.manager.findOne(Users, { where: { email } });

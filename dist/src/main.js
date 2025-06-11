@@ -11,12 +11,20 @@ require("reflect-metadata");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const service_router_1 = __importDefault(require("./router/service_router"));
 const data_source_1 = require("./data-source/data-source");
-dotenv_1.default.config();
+const path_1 = __importDefault(require("path"));
+const envPath = path_1.default.join(process.cwd(), '.env.development');
+console.log(envPath);
+dotenv_1.default.config({
+    path: envPath
+});
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use(express_1.default.static("public"));
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({
+    origin: ['https://vite-project-eight-self.vercel.app', 'http://localhost:5173'],
+    credentials: true,
+}));
 app.use((0, cookie_parser_1.default)());
 // Initialize database connection
 const initializeApp = async () => {

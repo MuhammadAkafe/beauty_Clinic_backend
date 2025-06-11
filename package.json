@@ -4,9 +4,9 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "node  dist/src/main.js",
-    "dev": "nodemon ./src/main.ts",
-    "build": "tsc",
+    "start": "node  dist/src/main.js --mode production",
+    "dev": "nodemon ./src/main.ts --mode development",
+    "build": "tsc --mode production",
     "watch": "tsc -w",
     "typeorm": "typeorm-ts-node-commonjs",
     "migration:run": "typeorm-ts-node-commonjs migration:run -d src/data-source/data-source.ts",

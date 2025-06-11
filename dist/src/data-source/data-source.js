@@ -10,8 +10,20 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const Service_1 = require("../entity/Service");
 const Items_1 = require("../entity/Items");
 const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
+// Get the absolute path to .env.production
+const envPath = path_1.default.join(process.cwd(), '.env.production');
+console.log('Current working directory:', process.cwd());
+console.log('Looking for .env.production at:', envPath);
+console.log('File exists:', fs_1.default.existsSync(envPath));
 // Load production environment variables
-dotenv_1.default.config({ path: path_1.default.resolve(__dirname, '../..//.env.production') });
+const result = dotenv_1.default.config({ path: envPath });
+if (result.error) {
+    console.error('Error loading .env.production:', result.error);
+    process.exit(1);
+}
+// Log all environment variables (excluding sensitive data)
+console.log('Environment variables loaded:', Object.keys(process.env).filter(key => key.startsWith('DATABASE_')));
 // Log the database URL (without password) for debugging
 const dbUrl = process.env.DATABASE_URL;
 if (!dbUrl) {

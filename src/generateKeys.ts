@@ -4,7 +4,8 @@ import path from 'path';
 
 // Create keys directory if it doesn't exist
 const keysDir = path.join(__dirname, 'keys');
-if (!fs.existsSync(keysDir)) {
+if (!fs.existsSync(keysDir)) 
+    {
     fs.mkdirSync(keysDir, { recursive: true });
 }
 

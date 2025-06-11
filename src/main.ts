@@ -6,8 +6,10 @@ import "reflect-metadata"
 import cookieParser from "cookie-parser";
 import serviceRouter from "./router/service_router";
 import { AppDataSource } from "./data-source/data-source";
+import { handleEnv } from "./controller/handle_env";
 
-dotenv.config();
+// Load environment variables
+handleEnv();
 
 const app = express();
 app.use(express.json());
