@@ -5,11 +5,15 @@ import { create_user_response } from "../../types/Response";
 import { AppDataSource } from "../../data-source/data-source";
 import { Users } from "../../entity/Users";
 import { LoginRequestBody } from "../../types/Request";
+import fs from 'fs';
+import path from 'path';
 
-// Read the keys
-const privateKey = process.env.PRIVATE_KEY;
+// Read the private key from the generated key file
+const privateKeyPath = path.join(__dirname, '../../../keys/private.pem');
+const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
+
 if (!privateKey) {
-    throw new Error('PRIVATE_KEY is not set in environment variables');
+    throw new Error('Private key file not found or empty');
 }
 
 const validateLogin = async (email: string, password: string) => {
@@ -30,11 +34,6 @@ const login = async (req: Request<{},{},LoginRequestBody>, res: Response): Promi
         const isPasswordValid = await validateLogin(email, password);
         if (!isPasswordValid) {
             return res.status(401).json({ message: "Invalid email or password", success: false });
-        }
-
-        // Ensure privateKey is not undefined before using it
-        if (!privateKey) {
-            throw new Error('Private key is not available');
         }
 
         const token = jwt.sign({ email }, privateKey, { algorithm: 'RS256', expiresIn: '20s' });
