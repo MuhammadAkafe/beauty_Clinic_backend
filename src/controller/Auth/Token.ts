@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
+
 import { handleEnv } from "../handle_env";
 
 const envPath = handleEnv();
 
-dotenv.config({ path: envPath });
+
 
 const privateKey = process.env.PRIVATE_KEY;
 

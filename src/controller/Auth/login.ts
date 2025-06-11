@@ -5,9 +5,10 @@ import { create_user_response } from "../../types/Response";
 import { AppDataSource } from "../../data-source/data-source";
 import { Users } from "../../entity/Users";
 import { LoginRequestBody } from "../../types/Request";
+import dotenv from "dotenv";
+import path from "path";
 
-
-
+dotenv.config( );
 
 
 const validateLogin = async (email: string, password: string) => {
@@ -22,7 +23,7 @@ const validateLogin = async (email: string, password: string) => {
 // Read the keys
 const privateKey = process.env.PRIVATE_KEY;
 if(!privateKey) {
-    throw new Error("PRIVATE_KEY is not set in .env.production");
+    throw new Error(`PRIVATE_KEY is not set in ${process.env.NODE_ENV}`);
 }
 
 const login = async (req: Request<{},{},LoginRequestBody>, res: Response): Promise<Response<create_user_response>> => {

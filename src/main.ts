@@ -1,6 +1,5 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import authRouter from "./router/auth_router"
 import "reflect-metadata"
 import cookieParser from "cookie-parser";
@@ -10,6 +9,8 @@ import { handleEnv } from "./controller/handle_env";
 
 // Load environment variables
 handleEnv();
+
+
 
 const app = express();
 app.use(express.json());
@@ -33,7 +34,7 @@ const initializeApp = async () => {
             console.log("Database connection initialized successfully");
         }
 
-        const port = process.env.PORT || 3001;
+        const port = process.env.PORT ;
         app.use("/auth", authRouter);
         app.use("/service", serviceRouter);
         
