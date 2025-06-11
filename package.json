@@ -4,9 +4,9 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "node  dist/src/main.js --mode production",
-    "dev": "nodemon ./src/main.ts --mode development",
-    "build": "tsc --mode production",
+    "start": "cross-env NODE_ENV=production node  dist/src/main.js ",
+    "dev": "cross-env NODE_ENV=development nodemon ./src/main.ts ",
+    "build": "tsc",
     "watch": "tsc -w",
     "typeorm": "typeorm-ts-node-commonjs",
     "migration:run": "typeorm-ts-node-commonjs migration:run -d src/data-source/data-source.ts",
@@ -22,6 +22,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "fs": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",
     "nodemon": "^3.1.10",
     "pg": "^8.16.0",
@@ -35,6 +36,7 @@
     "@types/express": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.15.29",
+    "cross-env": "^7.0.3",
     "ts-node": "^10.9.2",
     "typeorm-ts-node-commonjs": "^0.3.20",
     "typescript": "^5.8.3"

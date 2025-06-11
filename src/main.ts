@@ -1,3 +1,9 @@
+import dotenv from "dotenv";
+import path from "path";
+
+// Load environment variables first, before any other imports
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+
 import express from "express";
 import cors from "cors";
 import authRouter from "./router/auth_router"
@@ -5,12 +11,16 @@ import "reflect-metadata"
 import cookieParser from "cookie-parser";
 import serviceRouter from "./router/service_router";
 import { AppDataSource } from "./data-source/data-source";
-import { handleEnv } from "./controller/handle_env";
+import * as fs from 'fs';
 
-// Load environment variables
-handleEnv();
+// Log environment variables for debugging
+console.log('Environment loaded:', {
+    NODE_ENV: process.env.NODE_ENV,
+    PRIVATE_KEY_EXISTS: !!process.env.PRIVATE_KEY,
+    PORT: process.env.PORT
+});
 
-
+const port = process.env.PORT || 3000;
 
 const app = express();
 app.use(express.json());
@@ -21,7 +31,6 @@ app.use(cors({
     origin: ['https://vite-project-eight-self.vercel.app', 'http://localhost:5173'],
     credentials: true,
   }));
-
 
 app.use(cookieParser());
 
@@ -34,10 +43,8 @@ const initializeApp = async () => {
             console.log("Database connection initialized successfully");
         }
 
-        const port = process.env.PORT ;
         app.use("/auth", authRouter);
         app.use("/service", serviceRouter);
-        
         app.listen(port, () => {
             console.log(`Server is running on port ${port}`);
         });

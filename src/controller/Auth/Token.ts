@@ -1,13 +1,21 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
-import { handleEnv } from "../handle_env";
-
-const envPath = handleEnv();
-
 
 
 const privateKey = process.env.PRIVATE_KEY;
+
+
+if(!privateKey)
+    {
+        throw new Error('PRIVATE_KEY is not set in environment variables');
+    }
+
+
+
+
+
+
 
 
  const verify_token = (req: Request, res: Response, next: NextFunction) => {

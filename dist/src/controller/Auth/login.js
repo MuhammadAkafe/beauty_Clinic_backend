@@ -5,12 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const dotenv_1 = __importDefault(require("dotenv"));
-const path_1 = __importDefault(require("path"));
 const data_source_1 = require("../../data-source/data-source");
 const Users_1 = require("../../entity/Users");
-// Load production environment variables
-dotenv_1.default.config({ path: path_1.default.resolve(__dirname, '../../../.env.production') });
 const validateLogin = async (email, password) => {
     const user = await data_source_1.AppDataSource.manager.findOne(Users_1.Users, { where: { email } });
     if (!user) {
@@ -22,7 +18,7 @@ const validateLogin = async (email, password) => {
 // Read the keys
 const privateKey = process.env.PRIVATE_KEY;
 if (!privateKey) {
-    throw new Error("PRIVATE_KEY is not set in .env.production");
+    throw new Error('PRIVATE_KEY is not set in environment variables');
 }
 const login = async (req, res) => {
     try {
