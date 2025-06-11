@@ -1,9 +1,7 @@
 import dotenv from "dotenv";
 import path from "path";
-
 // Load environment variables first, before any other imports
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
-
 import express from "express";
 import cors from "cors";
 import authRouter from "./router/auth_router"
@@ -11,7 +9,6 @@ import "reflect-metadata"
 import cookieParser from "cookie-parser";
 import serviceRouter from "./router/service_router";
 import { AppDataSource } from "./data-source/data-source";
-import * as fs from 'fs';
 
 // Log environment variables for debugging
 console.log('Environment loaded:', {

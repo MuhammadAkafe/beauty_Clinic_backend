@@ -5,6 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const privateKey = process.env.PRIVATE_KEY;
+if (!privateKey) {
+    throw new Error('PRIVATE_KEY is not set in environment variables');
+}
 const verify_token = (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
