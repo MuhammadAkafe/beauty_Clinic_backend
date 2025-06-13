@@ -23,3 +23,16 @@ delete FROM items where item_id = 25;
 
 
 drop table if exists users;
+
+update users set "isAdmin" = true where user_id = 1;
+
+select * from users where "isAdmin" = true;
+select * from users where "isAdmin" = false;
+
+
+
+
+
+
+
+

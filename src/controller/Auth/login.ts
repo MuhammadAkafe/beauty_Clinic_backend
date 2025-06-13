@@ -35,9 +35,12 @@ const login = async (req: Request<{},{},LoginRequestBody>, res: Response): Promi
         if (!isPasswordValid) {
             return res.status(401).json({ message: "Invalid email or password", success: false });
         }
-
-        const token = jwt.sign({ email }, privateKey, { algorithm: 'RS256', expiresIn: '20s' });
-        const refreshToken = jwt.sign({ email }, privateKey, { algorithm: 'RS256', expiresIn: '7d' });
+        const user = await AppDataSource.manager.findOne(Users, { where: { email } });
+        if (!user) {
+            return res.status(401).json({ message: "Invalid email or password", success: false });
+        }
+        const token = jwt.sign({ email, isAdmin: user.isAdmin }, privateKey, { algorithm: 'RS256', expiresIn: '20s' });
+        const refreshToken = jwt.sign({ email, isAdmin: user.isAdmin }, privateKey, { algorithm: 'RS256', expiresIn: '7d' });
         
         return res
             .cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, maxAge: 1000 * 60 * 60 * 24 * 30 })
