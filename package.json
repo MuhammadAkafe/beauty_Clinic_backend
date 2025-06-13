@@ -9,7 +9,7 @@
     "build": "tsc",
     "watch": "tsc -w",
     "typeorm": "typeorm-ts-node-commonjs",
-    "migration:run": "typeorm-ts-node-commonjs migration:run -d src/data-source/data-source.ts",
+    "migration:run": "cross-env NODE_ENV=production typeorm-ts-node-commonjs migration:run -d src/data-source/data-source.ts",
     "migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/data-source/data-source.ts",
     "migration:create": "typeorm-ts-node-commonjs migration:create",
     "generate-keys": "ts-node src/generateKeys.ts"
