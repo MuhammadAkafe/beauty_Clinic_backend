@@ -29,7 +29,7 @@ const get_all_services = async (req: Request<{user_id:string}>, res: Response): 
                 where: { user_id: parseInt(user_id) }
             });
 
-        if(!services)
+        if(!services || services.length===0)
         {
             return res.status(404).json({ 
                 message: "No services found", 
@@ -37,12 +37,6 @@ const get_all_services = async (req: Request<{user_id:string}>, res: Response): 
             });
         }
 
-        if (services.length===0) {
-            return res.status(404).json({ 
-                message: "No services found", 
-                success: false 
-            });
-        }
         
         return res.status(200).json(
             { 
