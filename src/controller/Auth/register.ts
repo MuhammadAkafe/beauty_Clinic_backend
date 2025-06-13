@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import { create_user_response } from "../../types/Response";
 import { Users } from "../../entity/Users";
-import { AppDataSource } from "../../data-source/data-source";
+import  AppDataSource  from "../../data-source/data-source";
 import { RegisterRequestBody } from "../../types/Request";
 
 

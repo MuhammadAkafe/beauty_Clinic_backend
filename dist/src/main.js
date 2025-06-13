@@ -13,7 +13,7 @@ const auth_router_1 = __importDefault(require("./router/auth_router"));
 require("reflect-metadata");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const service_router_1 = __importDefault(require("./router/service_router"));
-const data_source_1 = require("./data-source/data-source");
+const data_source_1 = __importDefault(require("./data-source/data-source"));
 // Log environment variables for debugging
 console.log('Environment loaded:', {
     NODE_ENV: process.env.NODE_ENV,
@@ -33,9 +33,9 @@ app.use((0, cookie_parser_1.default)());
 // Initialize database connection
 const initializeApp = async () => {
     try {
-        if (!data_source_1.AppDataSource.isInitialized) {
+        if (!data_source_1.default.isInitialized) {
             console.log('Initializing database connection...');
-            await data_source_1.AppDataSource.initialize();
+            await data_source_1.default.initialize();
             console.log("Database connection initialized successfully");
         }
         app.use("/auth", auth_router_1.default);

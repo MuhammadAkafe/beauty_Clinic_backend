@@ -5,18 +5,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const data_source_1 = require("../../data-source/data-source");
+const data_source_1 = __importDefault(require("../../data-source/data-source"));
 const Users_1 = require("../../entity/Users");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 // Read the private key from the generated key file
-const privateKeyPath = path_1.default.join(__dirname, '../../../keys/private.pem');
-const privateKey = fs_1.default.readFileSync(privateKeyPath, 'utf8');
+let privateKey;
+if (process.env.NODE_ENV === 'development') {
+    const privateKeyPath = path_1.default.join(__dirname, '../../../keys/private.pem');
+    if (!fs_1.default.existsSync(privateKeyPath)) {
+        throw new Error('Privatekeypath file not found');
+    }
+    privateKey = fs_1.default.readFileSync(privateKeyPath, 'utf8');
+}
+else {
+    privateKey = process.env.PRIVATE_KEY;
+}
 if (!privateKey) {
-    throw new Error('Private key file not found or empty');
+    throw new Error('Private key not found');
 }
 const validateLogin = async (email, password) => {
-    const user = await data_source_1.AppDataSource.manager.findOne(Users_1.Users, { where: { email } });
+    const user = await data_source_1.default.manager.findOne(Users_1.Users, { where: { email } });
     if (!user) {
         return false;
     }
@@ -33,7 +42,7 @@ const login = async (req, res) => {
         if (!isPasswordValid) {
             return res.status(401).json({ message: "Invalid email or password", success: false });
         }
-        const user = await data_source_1.AppDataSource.manager.findOne(Users_1.Users, { where: { email } });
+        const user = await data_source_1.default.manager.findOne(Users_1.Users, { where: { email } });
         if (!user) {
             return res.status(401).json({ message: "Invalid email or password", success: false });
         }

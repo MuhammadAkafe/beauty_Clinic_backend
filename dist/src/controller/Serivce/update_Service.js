@@ -1,6 +1,9 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const data_source_1 = require("../../data-source/data-source");
+const data_source_1 = __importDefault(require("../../data-source/data-source"));
 const Service_1 = require("../../entity/Service");
 const Items_1 = require("../../entity/Items");
 const update_service = async (req, res) => {
@@ -10,7 +13,7 @@ const update_service = async (req, res) => {
         if (!service_id || !title || !sub_title || !status) {
             return res.status(400).json({ message: "All fields are required", success: false });
         }
-        const serviceRepository = data_source_1.AppDataSource.getRepository(Service_1.Services);
+        const serviceRepository = data_source_1.default.getRepository(Service_1.Services);
         const service = await serviceRepository.findOne({
             where: { service_id: service_id }
         });
@@ -25,7 +28,7 @@ const update_service = async (req, res) => {
             sub_title,
             status
         });
-        const itemsRepository = data_source_1.AppDataSource.getRepository(Items_1.Items);
+        const itemsRepository = data_source_1.default.getRepository(Items_1.Items);
         const items_old = await itemsRepository.find({
             where: { service: { service_id: service_id } }
         });
@@ -39,7 +42,7 @@ const update_service = async (req, res) => {
             item.type = list_item.type || "";
             item.price = list_item.price || 0;
             item.service = service;
-            await data_source_1.AppDataSource.getRepository(Items_1.Items).save(item);
+            await data_source_1.default.getRepository(Items_1.Items).save(item);
         }
         return res.status(200).json({
             message: "Service updated successfully",

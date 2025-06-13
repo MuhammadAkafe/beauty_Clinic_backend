@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { AppDataSource } from "../../data-source/data-source";
+import  AppDataSource  from "../../data-source/data-source";
 import { Services } from "../../entity/Service";
 import { UpdateServiceRequest } from "../../types/Request";
 import { UpdateServiceResponse } from "../../types/Response";

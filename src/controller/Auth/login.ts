@@ -2,19 +2,31 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { create_user_response } from "../../types/Response";
-import { AppDataSource } from "../../data-source/data-source";
+import  AppDataSource  from "../../data-source/data-source";
 import { Users } from "../../entity/Users";
 import { LoginRequestBody } from "../../types/Request";
 import fs from 'fs';
 import path from 'path';
 
 // Read the private key from the generated key file
+let privateKey: string | undefined;
+if(process.env.NODE_ENV === 'development') {
 const privateKeyPath = path.join(__dirname, '../../../keys/private.pem');
-const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
+if (!fs.existsSync(privateKeyPath)) {
+    throw new Error('Privatekeypath file not found');
+}
+privateKey = fs.readFileSync(privateKeyPath, 'utf8');
+}
+else {
+    privateKey = process.env.PRIVATE_KEY;
+}
 
 if (!privateKey) {
-    throw new Error('Private key file not found or empty');
+    throw new Error('Private key not found');
 }
+
+
+
 
 const validateLogin = async (email: string, password: string) => {
     const user = await AppDataSource.manager.findOne(Users, { where: { email } });

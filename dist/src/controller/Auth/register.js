@@ -5,11 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const Users_1 = require("../../entity/Users");
-const data_source_1 = require("../../data-source/data-source");
+const data_source_1 = __importDefault(require("../../data-source/data-source"));
 const createUser = async (username, email, password) => {
     try {
         // Check if the user already exists
-        const user = await data_source_1.AppDataSource.manager.findOne(Users_1.Users, { where: { email } });
+        const user = await data_source_1.default.manager.findOne(Users_1.Users, { where: { email } });
         if (user) {
             throw new Error("User already exists");
         }
@@ -21,7 +21,7 @@ const createUser = async (username, email, password) => {
         newUser.email = email;
         newUser.password = hashedPassword;
         // Save the user to the database
-        await data_source_1.AppDataSource.getRepository(Users_1.Users).save(newUser);
+        await data_source_1.default.getRepository(Users_1.Users).save(newUser);
         return newUser;
     }
     catch (error) {

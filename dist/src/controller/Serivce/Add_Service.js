@@ -1,8 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Add_Service = void 0;
 const Service_1 = require("../../entity/Service");
-const data_source_1 = require("../../data-source/data-source");
+const data_source_1 = __importDefault(require("../../data-source/data-source"));
 const Items_1 = require("./../../entity/Items");
 const Users_1 = require("../../entity/Users");
 const Add_Service = async (req, res) => {
@@ -23,7 +26,7 @@ const Add_Service = async (req, res) => {
             });
         }
         // Find user
-        const user = await data_source_1.AppDataSource.getRepository(Users_1.Users).findOne({
+        const user = await data_source_1.default.getRepository(Users_1.Users).findOne({
             where: { user_id: Number(user_id) }
         });
         if (!user) {
@@ -38,7 +41,7 @@ const Add_Service = async (req, res) => {
         service.sub_title = sub_title;
         service.status = status || "جلسه"; // Default status if not provided
         service.user_id = Number(user_id);
-        const savedService = await data_source_1.AppDataSource.getRepository(Service_1.Services).save(service);
+        const savedService = await data_source_1.default.getRepository(Service_1.Services).save(service);
         if (!savedService) {
             return res.status(400).json({
                 message: "Failed to save service",
@@ -50,7 +53,7 @@ const Add_Service = async (req, res) => {
             item.type = list_item.type || "";
             item.price = list_item.price || 0;
             item.service = savedService;
-            await data_source_1.AppDataSource.getRepository(Items_1.Items).save(item);
+            await data_source_1.default.getRepository(Items_1.Items).save(item);
         }
         return res.status(201).json({
             message: "Service and item added successfully",
