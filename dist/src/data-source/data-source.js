@@ -41,6 +41,7 @@ else {
         logging: false,
         migrations: [path_1.default.join(__dirname, "../migrations/*.ts")],
         migrationsTableName: "migrations",
+        migrationsRun: true,
         entities: [Users_1.Users, Service_1.Services, Items_1.Items],
         ssl: true
     });
