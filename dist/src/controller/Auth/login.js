@@ -7,10 +7,13 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const data_source_1 = require("../../data-source/data-source");
 const Users_1 = require("../../entity/Users");
-// Read the keys
-const privateKey = process.env.PRIVATE_KEY;
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
+// Read the private key from the generated key file
+const privateKeyPath = path_1.default.join(__dirname, '../../../keys/private.pem');
+const privateKey = fs_1.default.readFileSync(privateKeyPath, 'utf8');
 if (!privateKey) {
-    throw new Error('PRIVATE_KEY is not set in environment variables');
+    throw new Error('Private key file not found or empty');
 }
 const validateLogin = async (email, password) => {
     const user = await data_source_1.AppDataSource.manager.findOne(Users_1.Users, { where: { email } });
@@ -30,12 +33,12 @@ const login = async (req, res) => {
         if (!isPasswordValid) {
             return res.status(401).json({ message: "Invalid email or password", success: false });
         }
-        // Ensure privateKey is not undefined before using it
-        if (!privateKey) {
-            throw new Error('Private key is not available');
+        const user = await data_source_1.AppDataSource.manager.findOne(Users_1.Users, { where: { email } });
+        if (!user) {
+            return res.status(401).json({ message: "Invalid email or password", success: false });
         }
-        const token = jsonwebtoken_1.default.sign({ email }, privateKey, { algorithm: 'RS256', expiresIn: '20s' });
-        const refreshToken = jsonwebtoken_1.default.sign({ email }, privateKey, { algorithm: 'RS256', expiresIn: '7d' });
+        const token = jsonwebtoken_1.default.sign({ email, isAdmin: user.isAdmin }, privateKey, { algorithm: 'RS256', expiresIn: '20s' });
+        const refreshToken = jsonwebtoken_1.default.sign({ email, isAdmin: user.isAdmin }, privateKey, { algorithm: 'RS256', expiresIn: '7d' });
         return res
             .cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, maxAge: 1000 * 60 * 60 * 24 * 30 })
             .json({ message: "login successful", success: true, accessToken: token });

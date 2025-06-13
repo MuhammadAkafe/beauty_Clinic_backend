@@ -41,7 +41,7 @@ const initializeApp = async () => {
         app.use("/auth", auth_router_1.default);
         app.use("/service", service_router_1.default);
         app.listen(port, () => {
-            console.log(`Server is running on port ${port}`);
+            console.log(` server is running on http://localhost:${port}`);
         });
     }
     catch (error) {

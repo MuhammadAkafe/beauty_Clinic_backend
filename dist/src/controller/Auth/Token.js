@@ -4,9 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const privateKey = process.env.PRIVATE_KEY;
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
+// Read the private key from the generated key file
+const privateKeyPath = path_1.default.join(__dirname, '../../../keys/private.pem');
+const privateKey = fs_1.default.readFileSync(privateKeyPath, 'utf8');
 if (!privateKey) {
-    throw new Error('PRIVATE_KEY is not set in environment variables');
+    throw new Error('Private key file not found or empty');
 }
 const verify_token = (req, res, next) => {
     try {
@@ -16,9 +20,6 @@ const verify_token = (req, res, next) => {
         }
         const token = authHeader.split(" ")[1];
         if (!token) {
-            return res.status(401).json({ message: "Unauthorized", success: false });
-        }
-        if (!privateKey) {
             return res.status(401).json({ message: "Unauthorized", success: false });
         }
         const decoded = jsonwebtoken_1.default.verify(token, privateKey);

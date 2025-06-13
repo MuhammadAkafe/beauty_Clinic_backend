@@ -20,7 +20,13 @@ const get_all_services = async (req, res) => {
             relations: ['items'],
             where: { user_id: parseInt(user_id) }
         });
-        if (!services?.length) {
+        if (!services) {
+            return res.status(404).json({
+                message: "No services found",
+                success: false
+            });
+        }
+        if (services.length === 0) {
             return res.status(404).json({
                 message: "No services found",
                 success: false
